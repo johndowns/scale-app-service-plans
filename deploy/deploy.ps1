@@ -26,4 +26,4 @@ func azure functionapp publish $functionAppName
 Pop-Location
 
 Write-Host 'Deployment is complete.'
-Write-Host "Please ensure that you grant Azure RBAC permissions to the function app's identity so that it can scale the app service plans up and down. The function app's identity object ID is $functionAppIdentityObjectId."
+Write-Host "Please ensure that you grant Azure RBAC permissions to the function app's identity so that it can scale the app service plans up and down. The function app's name is $functionAppName and the managed identity object ID is $functionAppIdentityObjectId."
