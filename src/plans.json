@@ -1,0 +1,16 @@
+[
+    {
+        "name": "MyAppServicePlanName",
+        "resourceGroupName": "MyResourceGroupName",
+        "scaleDown": {
+            "tier": "Standard",
+            "workerSize": "Small",
+            "numberOfWorkers": 1
+        },
+        "scaleUp": {
+            "tier": "Standard",
+            "workerSize": "Large",
+            "numberOfWorkers": 3
+        }
+    }
+]
