@@ -16,7 +16,6 @@ Write-Host 'Starting deployment of ARM template.'
 $templateFilePath = Join-Path $PSScriptRoot 'template.json'
 $deploymentOutputs = New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $templateFilePath
 $functionAppName = $deploymentOutputs.Outputs.functionAppName.value
-$functionAppName = 'mnvia3cffnmna'
 $functionAppIdentityObjectId = $deploymentOutputs.Outputs.functionAppIdentityObjectId.value
 
 Write-Host "Deploying to Azure Functions app $functionAppName."
