@@ -6,15 +6,30 @@ param(
     $ResourceGroupLocation
 )
 
-# Disable colour output on the CLI
-$env:AZURE_CORE_NO_COLOR = 'true'
+# Cause all errors to halt the script.
+$ErrorActionPreference = 'Stop'
 
 Write-Host "Creating resource group $ResourceGroupName in location $ResourceGroupLocation."
 New-AzResourceGroup -Name $ResourceGroupName -Location $ResourceGroupLocation -Force
 
 Write-Host 'Starting deployment of ARM template.'
+Write-Host 'Often this step fails the first time it executes because the managed identity does not provision successfully. If this happens, the script will retry the deployment.'
 $templateFilePath = Join-Path $PSScriptRoot 'template.json'
-$deploymentOutputs = New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $templateFilePath
+$ErrorActionPreference = 'Continue' # Due to the issue provisioning new managed identities, we will temporarily allow errors to continue for this section of the script
+$hasDeployedFunctionApp = $false
+while ($hasDeployedFunctionApp -ne $true)
+{
+    $deploymentOutputs = New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $templateFilePath
+    if ($null -ne $deploymentOutputs.Outputs)
+    {
+        break
+    }
+    
+    Write-Host 'Retrying Azure Functions app resources deployment in 5 seconds.'
+    Start-Sleep -Seconds 5
+}
+$ErrorActionPreference = 'Stop'
+
 $functionAppName = $deploymentOutputs.Outputs.functionAppName.value
 $functionAppIdentityObjectId = $deploymentOutputs.Outputs.functionAppIdentityObjectId.value
 
